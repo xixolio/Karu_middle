@@ -1,0 +1,5 @@
+curl -H "Content-Type: application/json" -X POST -d '{"totalPrice":100,"localId":1,"orders":'{"cardID"=1,"orderPrice"=25}'}' http://127.0.0.1:8000/purchase/
+curl -H "Content-Type: appltion/json" -X POST -d '{"totalPrice":100,"localId":1,"orders":'['{"cardID":1,"orderPrice"=50}']'}' http://127.0.0.1:8000/purchase/
+curl -H "Content-Type: application/json" -X POST -d '{"totalPrice":100,"localId":1,"orders":'['{"cardId":1,"orderPrice":50}']'}' http://127.0.0.1:8000/purchase/
+
+curl -H "Content-Type: application/json" -X POST -d '{"username":"caja1","password":"caja1","localUser":'{"job":"K","local":1}'}' http://127.0.0.1:8000/user/
