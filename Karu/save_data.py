@@ -26,6 +26,7 @@ def createItem(message, msg):
 		#post={"time":receiveTime,"topic":msg.topic,"value":val}
 		
 		#Se verifica si existe o no la rfID actual, si no, se crea en la base de datos7
+
 		if not rfID.objects.filter(hex_id = rfid).exists():
 			rfid_object = rfID.objects.create(hex_id = rfid)
 		else:	
@@ -94,6 +95,44 @@ def selectOrder(message,msg):
 		else:
 			print("la rfid no tiene una orden asociada")
 
+def setReceivingOrder(message,msg):
+	correctFormat = False
+	try:
+		#rfid = int(message)
+		rfid = message
+		tid = int(msg.topic.split('_')[-1])
+		correctFormat = True
+	except:
+		print('no se recibieron los datos correctamente')
+		
+	print(rfid)
+	if rfid == "0":
+		orders = Order.objects.filter()
+		for order in orders:
+			if order.receiving == tid:
+				order.receiving = 0
+				order.save()
+	else:
+		orders = Order.objects.filter()
+		for order in orders:
+			order.ongoing = False
+			order.save()
+			
+		if Order.objects.filter(rfID__hex_id = rfid).exists():
+			order_object = Order.objects.get(rfID__hex_id = rfid)
+			order_object.receiving = tid
+			order_object.save()
+			print("orden recepcionando ingredientes especiales")
+		else:
+			if not rfID.objects.filter(hex_id = rfid).exists():
+				rfid_object = rfID.objects.create(hex_id = rfid)
+			else:	
+				rfid_object = rfID.objects.get(hex_id = rfid)
+			order_object = Order.objects.create(rfID = rfid_object)
+			order_object.receiving = tid
+			order_object.save()
+			print("orden creada y recepcionando ingredientes especiales")
+
 			
 def sendPrices(message,msg):
 	rfid = message
@@ -124,7 +163,7 @@ def on_connect(client, userdata, flags, rc):
 	("ingrediente_1",0), ("ingrediente_4",0),
     ("ingrediente_2",0), ("ingrediente_5",0),
     ("ingrediente_3",0), ("ingrediente_6",0),
-	("caja",0)
+	("caja",0), ("tablet_1",0)
     ])
 
 # The callback for when a PUBLISH message is received from the server.
@@ -142,6 +181,8 @@ def on_message(client, userdata, msg):
 		createItem(message, msg)
 	elif request == "id":
 		sendPrices(message, msg)
+	elif request == "tablet":
+		setReceivingOrder(message, msg)
 		
 	
 # Set up client for MongoDB

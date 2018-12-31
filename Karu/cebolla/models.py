@@ -26,6 +26,7 @@ class Order(models.Model):
 	#cardId = models.IntegerField()
 	rfID = models.OneToOneField(rfID,related_name='order', on_delete=models.PROTECT, default=1)
 	ongoing = models.BooleanField(default = False)
+	receiving = models.PositiveIntegerField(default = 0)
 
 class Item(models.Model):
 
