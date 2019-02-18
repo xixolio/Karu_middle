@@ -107,15 +107,14 @@ def setReceivingOrder(message,msg):
 		
 	print(rfid)
 	if rfid == "0":
-		orders = Order.objects.filter()
+		orders = Order.objects.filter(receiving = tid)
 		for order in orders:
-			if order.receiving == tid:
-				order.receiving = 0
-				order.save()
+			order.receiving = 0
+			order.save()
 	else:
-		orders = Order.objects.filter()
+		orders = Order.objects.filter(receiving = tid)
 		for order in orders:
-			order.ongoing = False
+			order.receiving = 0
 			order.save()
 			
 		if Order.objects.filter(rfID__hex_id = rfid).exists():

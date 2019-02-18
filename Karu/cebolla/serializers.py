@@ -22,6 +22,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
 	# gets object based on its primary key
+	id = serializers.IntegerField(required = False)
 	ingredient = serializers.SlugRelatedField(slug_field = 'name',queryset=Ingredient.objects.all())
 	#itemPrice = serializers.IntegerField(read_only=True)
 	class Meta:
@@ -47,6 +48,18 @@ class OrderSerializer(serializers.ModelSerializer):
 		if len(items) == 0:
 			raise serializers.ValidationError('se requiere al menos un item')
 		return items
+		
+	def update(self,instance,validated_data):
+		
+		items = validated_data.pop('items')
+		
+		for item in items:
+			if not item.get('id'):
+				amount = item.get('amount')
+				ingredient = item.get('ingredient')
+				itemPrice = item.get('itemPrice')
+				Item.objects.create(amount=amount,itemPrice=itemPrice,ingredient=ingredient,order=instance)			
+		return instance
 
 
 
