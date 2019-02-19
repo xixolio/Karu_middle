@@ -15,8 +15,11 @@ def createItem(message, msg):
 	correctFormat = False
 	try:
 		data = str(message).strip('{}').split(', ')
+		print(data)
 		rfid = data[0].split(' ')[1]
-		peso = int(data[1].split(' ')[1])
+		print(rfid)
+		peso = int(float(data[1].split(' ')[1]))
+		print(peso)
 		correctFormat = True
 	except:
 		print("couldnt properly gather the data")
@@ -106,11 +109,15 @@ def setReceivingOrder(message,msg):
 		print('no se recibieron los datos correctamente')
 		
 	print(rfid)
-	if rfid == "0":
+	if rfid == '0':
+		print("llegue")
 		orders = Order.objects.filter(receiving = tid)
 		for order in orders:
-			order.receiving = 0
-			order.save()
+			if len(Item.objects.filter(order = order)) == 0:
+				order.delete()
+			else:
+				order.receiving = 0
+				order.save()
 	else:
 		orders = Order.objects.filter(receiving = tid)
 		for order in orders:
@@ -136,11 +143,11 @@ def setReceivingOrder(message,msg):
 def sendPrices(message,msg):
 	rfid = message
 	pesa = int(msg.topic.split('_')[-1])
-	#print(rfid)
-	#print(pesa)
+	print(rfid)
+	print(pesa)
 	if Ingredient.objects.filter(scale = pesa).exists() and pesa != 0:
 		ingredientPrice = Ingredient.objects.get(scale = pesa).price
-		
+		print('aca')
 		if Order.objects.filter(rfID__hex_id = rfid).exists():
 			orderPrice = Order.objects.get(rfID__hex_id = rfid).orderPrice
 		else:
@@ -158,7 +165,7 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe([
-	("id_ingrediente_1",0), ("id_ingrediente_2",0),
+	("id_ingrediente_1",0), ("id_ingrediente_2",0),("id_ingrediente_3",0),
 	("ingrediente_1",0), ("ingrediente_4",0),
     ("ingrediente_2",0), ("ingrediente_5",0),
     ("ingrediente_3",0), ("ingrediente_6",0),

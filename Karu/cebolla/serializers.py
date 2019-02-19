@@ -42,7 +42,7 @@ class OrderSerializer(serializers.ModelSerializer):
 	orderPrice = serializers.IntegerField(read_only=True)
 	class Meta:
 		model = Order
-		fields = ('id','orderPrice','rfID','items','ongoing')
+		fields = ('id','orderPrice','rfID','items','ongoing','receiving')
 		
 	def validate_items(self, items):
 		if len(items) == 0:
