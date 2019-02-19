@@ -161,16 +161,25 @@ def sendPrices(message,msg):
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-
+	topics = []
+	topic1 = "id_ingrediente_"
+	topics += [(topic1 + str(i),0) for i in range(1,19)]
+	topic2 = "ingrediente_"
+	topics += [(topic2 + str(i),0) for i in range(1,19)]
+	topics.append(("caja",0))
+	topic3 = "tablet_"
+	topics += [(topic3 + str(i),0) for i in range(1,5)]
+	client.subscribe(topics)
+	
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe([
-	("id_ingrediente_1",0), ("id_ingrediente_2",0),("id_ingrediente_3",0),
-	("ingrediente_1",0), ("ingrediente_4",0),
-    ("ingrediente_2",0), ("ingrediente_5",0),
-    ("ingrediente_3",0), ("ingrediente_6",0),
-	("caja",0), ("tablet_1",0)
-    ])
+    # client.subscribe([
+	# ("id_ingrediente_1",0), ("id_ingrediente_2",0),("id_ingrediente_3",0),
+	# ("ingrediente_1",0), ("ingrediente_4",0),
+    # ("ingrediente_2",0), ("ingrediente_5",0),
+    # ("ingrediente_3",0), ("ingrediente_6",0),
+	# ("caja",0), ("tablet_1",0)
+    # ])
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
