@@ -61,7 +61,7 @@ class OrderSerializer(serializers.ModelSerializer):
 				Item.objects.create(amount=amount,itemPrice=itemPrice,ingredient=ingredient,order=instance)
 			else:
 				oldItem = Item.objects.get(id = item.get('id'))
-				oldItem.amount += item.get('amount')
+				oldItem.amount = item.get('amount')
 				oldItem.save()
 		return instance
 
