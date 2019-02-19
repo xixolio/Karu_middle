@@ -160,7 +160,7 @@ def sendPrices(message,msg):
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+	print("Connected with result code "+str(rc))
 	topics = []
 	topic1 = "id_ingrediente_"
 	topics += [(topic1 + str(i),0) for i in range(1,19)]
