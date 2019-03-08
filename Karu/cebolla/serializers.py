@@ -53,6 +53,7 @@ class OrderSerializer(serializers.ModelSerializer):
 		
 		items = validated_data.pop('items')
 		instance.orderPrice = validated_data.pop('orderPrice')
+		#print(instance.orderPrice)
 		for item in items:
 			if not item.get('id'):
 				amount = item.get('amount')
@@ -63,6 +64,7 @@ class OrderSerializer(serializers.ModelSerializer):
 				oldItem = Item.objects.get(id = item.get('id'))
 				oldItem.amount = item.get('amount')
 				oldItem.save()
+		instance.save()
 		return instance
 
 
