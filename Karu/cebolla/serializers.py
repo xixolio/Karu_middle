@@ -39,7 +39,7 @@ class ItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
 #	algo = serializers.IntegerField()
 	items = ItemSerializer(many=True, required=True)
-	orderPrice = serializers.IntegerField(read_only=True)
+	orderPrice = serializers.IntegerField()
 	class Meta:
 		model = Order
 		fields = ('id','orderPrice','rfID','items','ongoing','receiving')
