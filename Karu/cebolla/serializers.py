@@ -52,7 +52,7 @@ class OrderSerializer(serializers.ModelSerializer):
 	def update(self,instance,validated_data):
 		
 		items = validated_data.pop('items')
-		
+		instance.orderPrice = validated_data.pop('orderPrice')
 		for item in items:
 			if not item.get('id'):
 				amount = item.get('amount')
