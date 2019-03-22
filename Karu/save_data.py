@@ -10,6 +10,14 @@ django.setup()
 
 from cebolla.models import *
 
+def publishToScreens(reader_ids):
+	for id in topic_ids:
+		if rfID.objects.filter(receiving = id).exists():
+			order_object = Order.objects.get(receiving = id)
+			client.publish("reader_"+str(id),order_object.orderPrice)	
+		
+	
+
 def createItem(message, msg):	
 	
 	correctFormat = False
@@ -168,7 +176,7 @@ def on_connect(client, userdata, flags, rc):
 	topics += [(topic2 + str(i),0) for i in range(1,19)]
 	topics.append(("caja",0))
 	topic3 = "tablet_"
-	topics += [(topic3 + str(i),0) for i in range(1,5)]
+	topics += [(topic3 + str(i),0) for i in range(1,10)]
 	client.subscribe(topics)
 	
     # Subscribing in on_connect() means that if we lose the connection and
@@ -210,11 +218,15 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("192.168.0.210", 1883, 60)
+#client.connect("192.168.0.210", 1883, 60)
+client.connect("192.168.10.1", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
 # Other loop*() functions are available that give a threaded interface and a
 # manual interface.
+planB_tablets_ids = [5,6]
+client.loop_start()
 while True:
-    client.loop_forever()
+	publishToScreens(planB_tablets_ids)
+	time.sleep(5)
