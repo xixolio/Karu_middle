@@ -11,7 +11,7 @@ django.setup()
 from cebolla.models import *
 
 def publishToScreens(reader_ids):
-	for id in topic_ids:
+	for id in reader_ids:
 		if rfID.objects.filter(receiving = id).exists():
 			order_object = Order.objects.get(receiving = id)
 			client.publish("reader_"+str(id),order_object.orderPrice)	
