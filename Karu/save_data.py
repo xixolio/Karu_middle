@@ -12,6 +12,7 @@ from cebolla.models import *
 
 def publishToScreens(reader_ids):
 	for id in reader_ids:
+		time.sleep(0.2)
 		if Order.objects.filter(receiving = id).exists():
 			order_object = Order.objects.get(receiving = id)
 			client.publish("reader_"+str(id),order_object.orderPrice)	
@@ -229,4 +230,4 @@ planB_tablets_ids = [3,4,5,6,7,8]
 client.loop_start()
 while True:
 	publishToScreens(planB_tablets_ids)
-	time.sleep(0.5)
+	
