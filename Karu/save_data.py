@@ -229,4 +229,4 @@ planB_tablets_ids = [5,6]
 client.loop_start()
 while True:
 	publishToScreens(planB_tablets_ids)
-	time.sleep(5)
+	time.sleep(0.5)
