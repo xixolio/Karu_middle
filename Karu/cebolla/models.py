@@ -9,6 +9,7 @@ class Ingredient(models.Model):
 	name = models.CharField(max_length=255) #Removed unique, since at this stage what matters is only price and scale
 	price = models.IntegerField()
 	scale = models.IntegerField(default = 0)
+	label = models.TextField(default = '')
 	@property
 	def generic_name(self):
 		 "returns a generic name for the object, made of the local location and ingredient name"
@@ -18,8 +19,6 @@ class Ingredient(models.Model):
 class rfID(models.Model):
 	hex_id = models.CharField(max_length=255, unique = True)
 	
-
-
 class Order(models.Model):
 
 	orderPrice = models.IntegerField(default=0)

@@ -7,7 +7,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 		id = serializers.IntegerField(required = True)
 		class Meta:
 			model = Ingredient
-			fields = ('id', 'name','price','scale')
+			fields = ('id', 'name','price','scale','label')
 			
 		def validate_scale(self, scale):
 			if scale > 0:
