@@ -174,7 +174,7 @@ def on_connect(client, userdata, flags, rc):
 	topics.append(("caja",0))
 	topic3 = "tablet_"
 	topics += [(topic3 + str(i),0) for i in range(1,10)]
-	tpics += [("insta_ingrediente_17",0)]
+	topics += [("insta_ingrediente_17",0)]
 	client.subscribe(topics)
 	
     # Subscribing in on_connect() means that if we lose the connection and
