@@ -229,5 +229,6 @@ client.connect("192.168.0.210", 1883, 60)
 planB_tablets_ids = [3,4,5,6,7,8]
 client.loop_start()
 while True:
-	publishToScreens(planB_tablets_ids)
+    print("hola")
+            #publishToScreens(planB_tablets_ids)
 	
