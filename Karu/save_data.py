@@ -10,12 +10,8 @@ django.setup()
 
 from cebolla.models import *
 
-def publishToScreens(reader_ids):
-	for id in reader_ids:
-		time.sleep(0.2)
-		if Order.objects.filter(receiving = id).exists():
-			order_object = Order.objects.get(receiving = id)
-			client.publish("reader_"+str(id),order_object.orderPrice)	
+#def publishToScreens():
+		
 		
 	
 
@@ -178,6 +174,7 @@ def on_connect(client, userdata, flags, rc):
 	topics.append(("caja",0))
 	topic3 = "tablet_"
 	topics += [(topic3 + str(i),0) for i in range(1,10)]
+	tpics += [("insta_ingrediente_17",0)]
 	client.subscribe(topics)
 	
     # Subscribing in on_connect() means that if we lose the connection and
@@ -228,7 +225,16 @@ client.connect("192.168.0.210", 1883, 60)
 # manual interface.
 planB_tablets_ids = [3,4,5,6,7,8]
 client.loop_start()
+prev_price = 0
+new_price = 0
 while True:
-    print("hola")
-            #publishToScreens(planB_tablets_ids)
+print('hola')
+    time.sleep(0.2)
+	price = Price.objects.get(id = 1)
+	new_price = price
+	if prev_price != new_price:
+		client.publish("insta_ingrediente_17",new_price)
+		prev_price = new_price
+	#order_object = Order.objects.get(receiving = id)
+	
 	
