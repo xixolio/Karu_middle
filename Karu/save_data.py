@@ -228,15 +228,16 @@ client.loop_start()
 prev_price = 0
 new_price = 0
 while True:
-	print('hola')
-	print(new_price)
-	time.sleep(0.2)
-	price = Price.objects.get(id = 1).price
-	new_price = price
 	
-	if prev_price != new_price:
-		client.publish("insta_ingrediente_17",new_price)
-		prev_price = new_price
+	print('hola')
+	# print(new_price)
+	# time.sleep(0.2)
+	# price = Price.objects.get(id = 1).price
+	# new_price = price
+	
+	# if prev_price != new_price:
+		# client.publish("insta_ingrediente_17",new_price)
+		# prev_price = new_price
 	#order_object = Order.objects.get(receiving = id)
 	
 	
