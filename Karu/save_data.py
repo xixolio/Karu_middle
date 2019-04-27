@@ -228,8 +228,8 @@ client.loop_start()
 prev_price = 0
 new_price = 0
 while True:
-print('hola')
-    time.sleep(0.2)
+	print('hola')
+	time.sleep(0.2)
 	price = Price.objects.get(id = 1)
 	new_price = price
 	if prev_price != new_price:
