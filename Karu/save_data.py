@@ -229,10 +229,11 @@ prev_price = 0
 new_price = 0
 while True:
 	print('hola')
-	time.sleep(0.2)
-	price = Price.objects.get(id = 1)
-	new_price = price
 	print(new_price)
+	time.sleep(0.2)
+	price = Price.objects.get(id = 1).price
+	new_price = price
+	
 	if prev_price != new_price:
 		client.publish("insta_ingrediente_17",new_price)
 		prev_price = new_price
