@@ -6,6 +6,8 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'ingredient',views.IngredientViewSet)
 router.register(r'order',views.OrderViewSet)
+router.register(r'price',views.PriceViewSet)
+
 #router.register(r'item',views.ItemViewSet)
 
 

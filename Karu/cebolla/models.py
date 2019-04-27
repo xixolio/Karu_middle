@@ -4,6 +4,9 @@ from __future__ import unicode_literals
 from django.db import models
 #from django.contrib.auth.models import User
 
+class Price(models.Model):
+	name = models.CharField(max_length=255,unique=True)
+	price = models.IntegerField(default=0)
 
 class Ingredient(models.Model):
 	name = models.CharField(max_length=255) #Removed unique, since at this stage what matters is only price and scale

@@ -24,7 +24,9 @@ class OrderViewSet(viewsets.ModelViewSet):
 	serializer_class = OrderSerializer 
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-	
+class PriceViewSet(viewsets.ModelViewSet):
+	queryset = Price.objects.all()
+	serializer_class = PriceSerializer
 
 
 

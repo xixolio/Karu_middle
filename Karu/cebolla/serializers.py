@@ -2,6 +2,10 @@ from rest_framework import serializers
 from cebolla.models import *
 from django.contrib.auth.models import User
 
+class PriceSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Price
+		fields = ('name','price')
 
 class IngredientSerializer(serializers.ModelSerializer):
 		id = serializers.IntegerField(required = True)
