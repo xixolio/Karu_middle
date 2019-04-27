@@ -228,10 +228,10 @@ client.loop_start()
 prev_price = 0
 new_price = 0
 while True:
-	
+	time.sleep(10)
 	print('hola')
 	# print(new_price)
-	# time.sleep(0.2)
+	# 
 	# price = Price.objects.get(id = 1).price
 	# new_price = price
 	
