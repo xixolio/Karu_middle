@@ -225,21 +225,21 @@ client.connect("192.168.0.210", 1883, 60)
 # Other loop*() functions are available that give a threaded interface and a
 # manual interface.
 planB_tablets_ids = [3,4,5,6,7,8]
-#client.loop_start()
+client.loop_start()
 prev_price = 0
 new_price = 0
-client.loop_forever()
-#while True:
-#	time.sleep(10)
-#	print('hola')
-	# print(new_price)
+#client.loop_forever()
+while True:
+	time.sleep(0.2)
+	#print('hola')
+	print(new_price)
 	# 
-	# price = Price.objects.get(id = 1).price
-	# new_price = price
+	price = Price.objects.get(id = 1).price
+	new_price = price
 	
-	# if prev_price != new_price:
-		# client.publish("insta_ingrediente_17",new_price)
-		# prev_price = new_price
+	if prev_price != new_price:
+		client.publish("insta_ingrediente_17",new_price)
+		prev_price = new_price
 	#order_object = Order.objects.get(receiving = id)
 	
 	
