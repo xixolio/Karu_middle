@@ -34,7 +34,8 @@ class Item(models.Model):
 
 	order = models.ForeignKey(Order,related_name='items', on_delete=models.CASCADE)
 	ingredient = models.ForeignKey(Ingredient,related_name='items', on_delete=models.PROTECT)
-	amount = models.IntegerField()
+	#amount = models.IntegerField()
+	amount = models.FloatField()
 	itemPrice = models.IntegerField()
 	
 	class Meta:

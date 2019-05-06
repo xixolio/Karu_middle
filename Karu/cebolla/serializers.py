@@ -57,7 +57,9 @@ class OrderSerializer(serializers.ModelSerializer):
 		
 		items = validated_data.pop('items')
 		instance.orderPrice = validated_data.pop('orderPrice')
-		#print(instance.orderPrice)
+		previous_items = list(Item.objects.filter(order = instance))
+		#print(previous_items)
+		#print(items)
 		for item in items:
 			if not item.get('id'):
 				amount = item.get('amount')
@@ -66,8 +68,12 @@ class OrderSerializer(serializers.ModelSerializer):
 				Item.objects.create(amount=amount,itemPrice=itemPrice,ingredient=ingredient,order=instance)
 			else:
 				oldItem = Item.objects.get(id = item.get('id'))
+				previous_items.remove(oldItem)
+				oldItem = Item.objects.get(id = item.get('id'))
 				oldItem.amount = item.get('amount')
-				oldItem.save()
+				oldItem.save()	
+		for item in previous_items:
+			item.delete()
 		instance.save()
 		return instance
 
