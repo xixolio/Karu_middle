@@ -48,6 +48,7 @@ class OrderSerializer(serializers.ModelSerializer):
 #	algo = serializers.IntegerField()
 	items = ItemSerializer(many=True, required=True)
 	orderPrice = serializers.IntegerField()
+	name = serializers.TextField(required=False)
 	class Meta:
 		model = Order
 		fields = ('id','orderPrice','rfID','items','ongoing','receiving','name')
