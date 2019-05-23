@@ -65,7 +65,7 @@ class OrderSerializer(serializers.ModelSerializer):
 		instance.orderPrice = validated_data.pop('orderPrice')
 		previous_items = list(Item.objects.filter(order = instance))
 		#print(previous_items)
-		kitchen_labels = ['agregados']
+		kitchen_labels = ['bases']
 		for item in items:
 			if not item.get('id'):
 				amount = item.get('amount')
