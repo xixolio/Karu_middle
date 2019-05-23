@@ -27,8 +27,16 @@ class OrderViewSet(viewsets.ModelViewSet):
 class PriceViewSet(viewsets.ModelViewSet):
 	queryset = Price.objects.all()
 	serializer_class = PriceSerializer
+	
+class KitchenItemViewSet(viewsets.ModelViewSet):
+	queryset = KitchenItem.objects.all()
+	serializer_class = KitchenItemSerializer 
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-
+class MessagesViewSet(viewsets.ModelViewSet):
+	queryset = Messages.objects.all()
+	serializer_class = MessagesSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 

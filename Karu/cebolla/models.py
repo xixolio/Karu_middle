@@ -29,6 +29,7 @@ class Order(models.Model):
 	rfID = models.OneToOneField(rfID,related_name='order', on_delete=models.PROTECT, default=1)
 	ongoing = models.BooleanField(default = False)
 	receiving = models.PositiveIntegerField(default = 0)
+	name = models.TextField(default = '')
 
 class Item(models.Model):
 
@@ -48,13 +49,18 @@ class Item(models.Model):
 			
 		# super(Item, self).save(*args, **kwargs)
 
-
+class KitchenItem(models.Model):
+	item = models.ForeignKey(Item,related_name='kitchenItems',on_delete=models.CASCADE)
+	amount = models.FloatField(default = 1)
+	status = models.TextField(default='pedido')
 			
-
+	#class Meta:
+	#	unique_together = ["item"]
 	
-	
-
-
+class Messages(models.Model):
+	name = models.TextField()
+	message = models.TextField()
+	date = models.DateTimeField(auto_now=True)
 	
 	
 
