@@ -15,7 +15,13 @@ class IngredientViewSet(viewsets.ModelViewSet):
 	serializer_class = IngredientSerializer
 	#permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 	
-
+class PurchaseViewSet(viewsets.ModelViewSet):
+	queryset = Purchase.objects.all()
+	serializer_class = PurchaseSerializer
+	def perform_create(self,serializer):
+		#local = Local.objects.get(id=self.request.data['localId'])
+		serializer.save()
+    
 		
 
     

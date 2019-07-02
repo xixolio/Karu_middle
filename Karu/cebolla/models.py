@@ -22,14 +22,24 @@ class Ingredient(models.Model):
 class rfID(models.Model):
 	hex_id = models.CharField(max_length=255, unique = True)
 	
+class Purchase(models.Model):
+
+	timestamp = models.DateTimeField(auto_now_add=True)
+	totalPrice = models.IntegerField(default=0)
+	
 class Order(models.Model):
 
 	orderPrice = models.IntegerField(default=0)
 	#cardId = models.IntegerField()
-	rfID = models.OneToOneField(rfID,related_name='order', on_delete=models.PROTECT, default=1)
-	ongoing = models.BooleanField(default = False)
-	receiving = models.PositiveIntegerField(default = 0)
+	#rfID = models.OneToOneField(rfID,related_name='order', on_delete=models.PROTECT, default=1)
+	#ongoing = models.BooleanField(default = False)
+	#receiving = models.PositiveIntegerField(default = 0)
 	name = models.TextField(default = 'defecto')
+	purchase = models.ForeignKey(Purchase,related_name='orders', on_delete=models.CASCADE)
+	
+
+	
+	
 
 class Item(models.Model):
 

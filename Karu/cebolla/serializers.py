@@ -37,12 +37,6 @@ class ItemSerializer(serializers.ModelSerializer):
 		model = Item
 		fields = ('id','ingredient','amount','itemPrice','order')
 		
-	# def create(self,validated_data):
-		# ingredientLocalId = validated_data.pop('ingredientLocal')
-		# itemPrice = IngredientLocal.objects.get(pk=ingredientLocalId).price
-		# item = Item.objects.create(**validated_data, itemPrice=itemPrice)
-		# return item
-
 
 class OrderSerializer(serializers.ModelSerializer):
 #	algo = serializers.IntegerField()
@@ -51,8 +45,9 @@ class OrderSerializer(serializers.ModelSerializer):
 	name = serializers.CharField(required=False)
 	class Meta:
 		model = Order
-		fields = ('id','orderPrice','rfID','items','ongoing','receiving','name')
-		
+		fields = ('id','orderPrice','items','name')
+	
+
 	def validate_items(self, items):
 		if len(items) == 0:
 			raise serializers.ValidationError('se requiere al menos un item')
@@ -100,6 +95,12 @@ class OrderSerializer(serializers.ModelSerializer):
 		for item in previous_items:
 			item.delete()
 		instance.save()
+		purchase = Purchase.objects.get(orders = instance)
+		totalPrice = 0
+		for order in Order.objects.filter(purchase = purchase):
+			totalPrice += order.orderPrice
+		purchase.totalPrice = totalPrice
+		purchase.save()
 		return instance
 		
 class KitchenItemSerializer(serializers.ModelSerializer):
@@ -122,6 +123,104 @@ class KitchenItemSerializer(serializers.ModelSerializer):
 		# itemPrice = IngredientLocal.objects.get(pk=ingredientLocalId).price
 		# item = Item.objects.create(**validated_data, itemPrice=itemPrice)
 		# return item
+		
+class ItemSerializerP(serializers.ModelSerializer):
+	# gets object based on its primary key
+	ingredient = serializers.SlugRelatedField(slug_field = 'name',queryset=Ingredient.objects.all())
+	#itemPrice = serializers.IntegerField(read_only=True)
+	class Meta:
+		model = Item
+		fields = ('id','ingredient','amount','itemPrice')
+		
+	# def create(self,validated_data):
+		# ingredientLocalId = validated_data.pop('ingredientLocal')
+		# itemPrice = IngredientLocal.objects.get(pk=ingredientLocalId).price
+		# item = Item.objects.create(**validated_data, itemPrice=itemPrice)
+		# return item
+
+#Serializers used in order to create an entire purchase with orders and items
+class OrderSerializerP(serializers.ModelSerializer):
+#	algo = serializers.IntegerField()
+	id = serializers.IntegerField(required = False)
+	items = ItemSerializerP(many=True, required=False)
+	orderPrice = serializers.IntegerField(read_only=True)
+	class Meta:
+		model = Order
+		fields = ('id','orderPrice','items','name')
+		
+
+class PurchaseSerializer(serializers.ModelSerializer):
+#	local = serializers.ReadOnlyField(source='local.location')
+#	local = serializers.PrimaryKeyRelatedField(queryset=Local.objects.all(),write_only=True)
+	orders = OrderSerializerP(many=True, required = True)
+	totalPrice = serializers.IntegerField()
+	
+	class Meta:
+		model = Purchase
+		fields = ('id','timestamp','orders','totalPrice')
+
+	def create(self,validated_data):
+	
+		orders_data = validated_data.pop('orders')
+#		print(validated_data)
+		purchase = Purchase.objects.create(**validated_data)
+		totalPrice = 0
+		
+		for order_data in orders_data:	
+		
+			items_data = order_data.pop('items')	
+			orderPrice = 0
+			order = Order.objects.create(purchase=purchase, **order_data)
+			
+			for item_data in items_data:
+			
+				itemPrice = item_data['itemPrice']
+				amount = item_data['amount']
+				orderPrice += itemPrice*amount
+				Item.objects.create(order=order,**item_data)
+			
+			
+			
+			order.orderPrice = orderPrice
+			totalPrice += orderPrice
+			order.save()
+		
+		purchase.totalPrice = totalPrice
+		purchase.save()
+		
+		return purchase
+	def update(self,instance,validated_data):
+		orders_data = validated_data.pop('orders')
+		totalPrice = instance.totalPrice
+		print(len(orders_data))
+		for order_data in orders_data:	
+			print(order_data.keys())
+			print(order_data.get('id'))
+			if not order_data.get('id'):
+				items_data = order_data.pop('items')
+				order = Order.objects.create(purchase=instance, **order_data)
+				orderPrice = 0
+				
+				for item_data in items_data:
+				
+					itemPrice = item_data['itemPrice']
+					amount = item_data['amount']
+					orderPrice += itemPrice*amount
+					Item.objects.create(order=order,**item_data)
+					
+				order.orderPrice = orderPrice
+				totalPrice += orderPrice
+				order.save()
+		
+		instance.totalPrice = totalPrice
+		instance.save()
+		return instance
+		
+	def validate_orders(self, orders):
+		if len(orders) == 0:
+			raise serializers.ValidationError('se requiere al menos una compra')
+		return orders
+
 
 class DateTimeFieldWihTZ(serializers.DateTimeField):
 	'''Class to make output of a DateTime Field timezone aware'''
