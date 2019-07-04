@@ -27,6 +27,7 @@ class Purchase(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 	totalPrice = models.IntegerField(default=0)
 	
+	
 class Order(models.Model):
 
 	orderPrice = models.IntegerField(default=0)

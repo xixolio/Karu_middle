@@ -127,6 +127,7 @@ class KitchenItemSerializer(serializers.ModelSerializer):
 class ItemSerializerP(serializers.ModelSerializer):
 	# gets object based on its primary key
 	ingredient = serializers.SlugRelatedField(slug_field = 'name',queryset=Ingredient.objects.all())
+	id = serializers.IntegerField(required = False)
 	#itemPrice = serializers.IntegerField(read_only=True)
 	class Meta:
 		model = Item
@@ -143,7 +144,7 @@ class OrderSerializerP(serializers.ModelSerializer):
 #	algo = serializers.IntegerField()
 	id = serializers.IntegerField(required = False)
 	items = ItemSerializerP(many=True, required=False)
-	orderPrice = serializers.IntegerField(read_only=True)
+	orderPrice = serializers.IntegerField()
 	class Meta:
 		model = Order
 		fields = ('id','orderPrice','items','name')
@@ -154,6 +155,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
 #	local = serializers.PrimaryKeyRelatedField(queryset=Local.objects.all(),write_only=True)
 	orders = OrderSerializerP(many=True, required = True)
 	totalPrice = serializers.IntegerField()
+	timestamp = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",default_timezone=pytz.timezone("Chile/Continental"),read_only=True)
 	
 	class Meta:
 		model = Purchase
@@ -192,27 +194,38 @@ class PurchaseSerializer(serializers.ModelSerializer):
 	def update(self,instance,validated_data):
 		orders_data = validated_data.pop('orders')
 		totalPrice = instance.totalPrice
-		print(len(orders_data))
-		for order_data in orders_data:	
-			print(order_data.keys())
-			print(order_data.get('id'))
+		previous_orders = list(Order.objects.filter(purchase = instance))
+		for order_data in orders_data:
 			if not order_data.get('id'):
-				items_data = order_data.pop('items')
+				order_data.pop('items')
 				order = Order.objects.create(purchase=instance, **order_data)
-				orderPrice = 0
 				
-				for item_data in items_data:
+				# for item_data in items_data:
 				
-					itemPrice = item_data['itemPrice']
-					amount = item_data['amount']
-					orderPrice += itemPrice*amount
-					Item.objects.create(order=order,**item_data)
-					
-				order.orderPrice = orderPrice
-				totalPrice += orderPrice
+					# itemPrice = item_data['itemPrice']
+					# amount = item_data['amount']
+					# orderPrice += itemPrice*amount
+					# Item.objects.create(order=order,**item_data)
+				
 				order.save()
+			else:
+				oldOrder = Order.objects.get(id = order_data.get('id'))
+				previous_orders.remove(oldOrder)
+				previous_items = list(Item.objects.filter(order = oldOrder))
+				items_data = order_data.pop('items')
+				for item_data in items_data:
+						print(item_data)
+						oldItem = Item.objects.get(id = item_data.get('id'))
+						previous_items.remove(oldItem)
+				for item in previous_items:
+					item.delete()
+				oldOrder.orderPrice = order_data.get('orderPrice')
+				oldOrder.save()
+		for order in previous_orders:
+			order.delete()
 		
-		instance.totalPrice = totalPrice
+		
+		instance.totalPrice = validated_data.get('totalPrice')
 		instance.save()
 		return instance
 		
@@ -236,7 +249,5 @@ class MessagesSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Messages
 		fields = ('id','name','message','date')
-
-
 
 
